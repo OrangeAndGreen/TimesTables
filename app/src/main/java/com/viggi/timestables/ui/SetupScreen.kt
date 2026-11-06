@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.viggi.timestables.DrillViewModel
 import com.viggi.timestables.Screen
+import com.viggi.timestables.domain.Operations
 import com.viggi.timestables.domain.QuestionDeck
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,6 +84,9 @@ fun SetupScreen(vm: DrillViewModel) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Section("Questions")
+            Dropdown("Practice", s.operations, Operations.entries, ::operationsText, Modifier.fillMaxWidth()) {
+                vm.updateSettings(s.copy(operations = it))
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Picker("Tables from", s.tablesFrom, numbers, Modifier.weight(1f)) { vm.updateSettings(s.copy(tablesFrom = it)) }
                 Picker("to", s.tablesTo, numbers, Modifier.weight(1f)) { vm.updateSettings(s.copy(tablesTo = it)) }

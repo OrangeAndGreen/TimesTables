@@ -50,14 +50,21 @@ data class SessionRecord(
     }
 }
 
-/** A fact and how it has gone across sessions. */
-data class FactStats(val a: Int, val b: Int, val asked: Int, val missed: Int)
+/** A fact, multiplied or divided, and how it has gone across sessions. */
+data class FactStats(val a: Int, val b: Int, val asked: Int, val missed: Int, val op: Op = Op.TIMES)
 
-/** Facts missed at least once, the most-missed first. 3 × 4 and 4 × 3 count together, smaller number first. */
+/**
+ * Facts missed at least once, the most-missed first, smaller number first. 3 × 4 and 4 × 3
+ * count together, and so do 12 ÷ 3 and 12 ÷ 4, but apart from the multiplication: knowing
+ * one doesn't mean knowing the other.
+ */
 fun missedFacts(sessions: List<SessionRecord>): List<FactStats> =
     sessions.flatMap { it.attempts }
-        .groupBy { minOf(it.question.a, it.question.b) to maxOf(it.question.a, it.question.b) }
-        .map { (fact, list) -> FactStats(fact.first, fact.second, list.size, list.count { it.outcome != Outcome.RIGHT }) }
+        .groupBy { it.question.op to it.question.fact }
+        .map { (key, list) ->
+            val (op, fact) = key
+            FactStats(fact.first, fact.second, list.size, list.count { it.outcome != Outcome.RIGHT }, op)
+        }
         .filter { it.missed > 0 }
         .sortedWith(compareByDescending<FactStats> { it.missed.toDouble() / it.asked }.thenByDescending { it.missed })
 
@@ -80,6 +87,7 @@ object SessionCodec {
             for (a in record.attempts) add(buildJsonObject {
                 put("a", a.question.a)
                 put("b", a.question.b)
+                put("op", a.question.op.name)
                 put("given", a.given?.let { JsonPrimitive(it) } ?: JsonNull)
                 put("outcome", a.outcome.name)
                 put("askedAt", a.askedAt)
@@ -101,7 +109,11 @@ object SessionCodec {
             attempts = o["attempts"]!!.jsonArray.map { e ->
                 val a = e.jsonObject
                 Attempt(
-                    question = Question(a["a"]!!.jsonPrimitive.int, a["b"]!!.jsonPrimitive.int),
+                    question = Question(
+                        a["a"]!!.jsonPrimitive.int,
+                        a["b"]!!.jsonPrimitive.int,
+                        a.str("op")?.let { name -> Op.entries.firstOrNull { it.name == name } } ?: Op.TIMES,
+                    ),
                     given = a["given"]?.jsonPrimitive?.intOrNull,
                     outcome = Outcome.valueOf(a.str("outcome")!!),
                     askedAt = a["askedAt"]!!.jsonPrimitive.long,
@@ -117,6 +129,7 @@ object SessionCodec {
         put("tablesTo", s.tablesTo)
         put("timesFrom", s.timesFrom)
         put("timesTo", s.timesTo)
+        put("operations", s.operations.name)
         put("maxScore", s.maxScore.orNull())
         put("answerSeconds", s.answerSeconds.orNull())
         put("wrongWaitSeconds", s.wrongWaitSeconds)
@@ -136,6 +149,8 @@ object SessionCodec {
             tablesTo = int("tablesTo", d.tablesTo),
             timesFrom = int("timesFrom", d.timesFrom),
             timesTo = int("timesTo", d.timesTo),
+            operations = o.str("operations")?.let { name -> Operations.entries.firstOrNull { it.name == name } }
+                ?: d.operations,
             maxScore = optional("maxScore", d.maxScore),
             answerSeconds = optional("answerSeconds", d.answerSeconds),
             wrongWaitSeconds = int("wrongWaitSeconds", d.wrongWaitSeconds),

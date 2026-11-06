@@ -70,7 +70,7 @@ fun HistoryScreen(vm: DrillViewModel) {
                 Column(Modifier.padding(16.dp)) {
                     Text("Most missed", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
                     Text(
-                        missed.joinToString("   ") { "${it.a} × ${it.b} (${it.missed}/${it.asked})" },
+                        missed.joinToString("   ") { "${factText(it)} (${it.missed}/${it.asked})" },
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }

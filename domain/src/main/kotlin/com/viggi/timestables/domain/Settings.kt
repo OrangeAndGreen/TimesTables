@@ -1,17 +1,22 @@
 package com.viggi.timestables.domain
 
+/** What the questions ask: the times tables, the divisions they make, or a mix of both. */
+enum class Operations { MULTIPLY, DIVIDE, BOTH }
+
 /**
  * What a session drills and how strict it is, chosen on the setup screen before it starts.
  *
  * A question multiplies a number from the tables range by one from the times range, so
  * "tables 7 to 7, times 1 to 12" drills the seven times table, and "2 to 10 by 2 to 10"
- * mixes them all. A null limit is off.
+ * mixes them all. Division turns the same facts round, so the 7 table divides by 7
+ * ("21 ÷ 7") or into 7 ("21 ÷ 3"), and every answer is a whole number. A null limit is off.
  */
 data class DrillSettings(
     val tablesFrom: Int = 2,
     val tablesTo: Int = 10,
     val timesFrom: Int = 1,
     val timesTo: Int = 10,
+    val operations: Operations = Operations.MULTIPLY,
     /** Reaching this score ends the session with the congratulations screen. */
     val maxScore: Int? = 20,
     /** Seconds allowed for each answer before it counts as wrong. */

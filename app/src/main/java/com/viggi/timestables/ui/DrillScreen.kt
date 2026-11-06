@@ -145,7 +145,9 @@ private fun QuestionArea(d: Drill, typed: String, now: Long, modifier: Modifier)
     ) {
         when (val p = d.phase) {
             is Phase.Asking -> {
-                Text("${p.question.a} × ${p.question.b}", fontSize = 76.sp, fontWeight = FontWeight.Bold)
+                val text = p.question.toString()
+                // "144 ÷ 12" is wider than "7 × 8": step down so it stays on one line.
+                Text(text, fontSize = if (text.length > 7) 62.sp else 76.sp, fontWeight = FontWeight.Bold, maxLines = 1)
                 Text(
                     "= " + typed.ifEmpty { "?" },
                     fontSize = 60.sp,
@@ -158,7 +160,7 @@ private fun QuestionArea(d: Drill, typed: String, now: Long, modifier: Modifier)
             is Phase.Waiting -> {
                 val m = p.missed
                 Text(
-                    "${m.question.a} × ${m.question.b} = ${m.question.answer}",
+                    "${m.question} = ${m.question.answer}",
                     fontSize = 60.sp,
                     fontWeight = FontWeight.Bold,
                     color = WrongRed,

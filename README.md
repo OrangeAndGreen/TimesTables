@@ -1,15 +1,17 @@
 # Times Tables
 
-Android app for drilling multiplication tables in the car on the way to school: two
-numbers, a big keypad, a chime for right and an "uh-oh" for wrong so the driver can
-follow along by ear, and a log of every session.
+Android app for drilling multiplication tables, and the divisions they make, in the car
+on the way to school: two numbers, a big keypad, a chime for right and an "uh-oh" for
+wrong so the driver can follow along by ear, and a log of every session.
 
-- **Setup:** the tables and times ranges (7 × 1–12, 2–10 × 2–10…), a top score, a
-  session length, an idle stop, a time limit per answer, a wait and a points penalty
-  after a wrong answer. The last settings are remembered.
+- **Setup:** multiplication, division or both; the tables and times ranges (7 × 1–12,
+  2–10 × 2–10…), a top score, a session length, an idle stop, a time limit per answer,
+  a wait and a points penalty after a wrong answer. The last settings are remembered.
 - **Session:** questions come from a shuffled deck, so every question in the range is
-  asked once before any repeats. Pause, stop, and the screen stays on. Leaving the
-  app pauses. Reaching the top score ends with a congratulations screen and a fanfare.
+  asked once before any repeats. Division turns each fact round (21 ÷ 7 or 21 ÷ 3), so
+  every answer is whole; with both, each fact comes both ways, never one right after
+  the other. Pause, stop, and the screen stays on. Leaving the app pauses. Reaching the
+  top score ends with a congratulations screen and a fanfare.
 - **History:** every session with each answer and how long it took, and the facts
   missed most often.
 
