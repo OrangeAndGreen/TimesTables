@@ -60,6 +60,8 @@ data class Drill(
     val lastInputAt: Long,
     val pausedAt: Long? = null,
     val pausedMillis: Long = 0,
+    /** How often each fact comes up in every deck dealt this session; even unless practicing the missed ones. */
+    val weights: FactWeights = FactWeights.NONE,
 ) {
     val score: Int get() = runningScore(attempts, settings.wrongPenalty)
     val right: Int get() = attempts.count { it.outcome == Outcome.RIGHT }
@@ -176,14 +178,19 @@ data class Drill(
     /** The next question, reshuffling the deck when it runs out. */
     private fun deal(random: Random, previous: Question): Pair<Question, Drill> {
         if (deckPos < deck.size) return deck[deckPos] to copy(deckPos = deckPos + 1)
-        val fresh = QuestionDeck.shuffled(settings, random, after = previous)
+        val fresh = QuestionDeck.shuffled(settings, random, after = previous, weights = weights)
         return fresh[0] to copy(deck = fresh, deckPos = 1)
     }
 
     companion object {
-        fun start(settings: DrillSettings, now: Long, random: Random): Drill {
+        fun start(
+            settings: DrillSettings,
+            now: Long,
+            random: Random,
+            weights: FactWeights = FactWeights.NONE,
+        ): Drill {
             val s = settings.normalized()
-            val deck = QuestionDeck.shuffled(s, random)
+            val deck = QuestionDeck.shuffled(s, random, weights = weights)
             return Drill(
                 settings = s,
                 startedAt = now,
@@ -191,6 +198,7 @@ data class Drill(
                 deck = deck,
                 deckPos = 1,
                 lastInputAt = now,
+                weights = weights,
             )
         }
     }

@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.viggi.timestables.DrillViewModel
 import com.viggi.timestables.Screen
+import com.viggi.timestables.domain.FactWeights
 import com.viggi.timestables.domain.Operations
 import com.viggi.timestables.domain.QuestionDeck
 
@@ -48,6 +49,7 @@ import com.viggi.timestables.domain.QuestionDeck
 fun SetupScreen(vm: DrillViewModel) {
     val s by vm.settings.collectAsState()
     val soundOn by vm.soundOn.collectAsState()
+    val sessions by vm.sessions.collectAsState()
     val numbers = (0..20).toList()
 
     Scaffold(
@@ -99,6 +101,17 @@ fun SetupScreen(vm: DrillViewModel) {
                 "${rangeText(s.normalized())}: ${QuestionDeck.all(s).size} questions, each asked once before any repeats",
                 style = MaterialTheme.typography.bodySmall,
             )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Practice the ones I miss", Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+                Switch(checked = s.practiceMissed, onCheckedChange = { vm.updateSettings(s.copy(practiceMissed = it)) })
+            }
+            if (s.practiceMissed) {
+                val boosted = remember(sessions, s) { FactWeights.from(sessions).boosted(QuestionDeck.all(s)) }
+                Text(
+                    practiceText(boosted),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
 
             Section("When it ends")
             OptionalPicker("Top score", s.maxScore, listOf(5, 10, 15, 20, 25, 30, 40, 50), { "$it" }) {

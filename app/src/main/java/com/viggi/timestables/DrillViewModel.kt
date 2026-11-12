@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.viggi.timestables.domain.Drill
 import com.viggi.timestables.domain.DrillSettings
 import com.viggi.timestables.domain.EndReason
+import com.viggi.timestables.domain.FactWeights
 import com.viggi.timestables.domain.Outcome
 import com.viggi.timestables.domain.Phase
 import com.viggi.timestables.domain.SessionRecord
@@ -74,7 +75,9 @@ class DrillViewModel(app: Application) : AndroidViewModel(app) {
         val now = System.currentTimeMillis()
         random = Random(System.nanoTime())
         store.saveSettings(_settings.value)
-        _drill.value = Drill.start(_settings.value, now, random)
+        val settings = _settings.value
+        val weights = if (settings.practiceMissed) FactWeights.from(_sessions.value) else FactWeights.NONE
+        _drill.value = Drill.start(settings, now, random, weights)
         _typed.value = ""
         _now.value = now
         _screen.value = Screen.Drilling

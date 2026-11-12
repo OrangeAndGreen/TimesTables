@@ -18,6 +18,13 @@ class FormatTest {
     }
 
     @Test
+    fun practice() {
+        assertEquals("Nothing in this range missed yet, so every question comes up equally", practiceText(0))
+        assertEquals("1 question in this range missed lately comes up more often", practiceText(1))
+        assertEquals("3 questions in this range missed lately come up more often", practiceText(3))
+    }
+
+    @Test
     fun seconds() {
         assertEquals("2.3 s", formatSeconds(2_340))
     }

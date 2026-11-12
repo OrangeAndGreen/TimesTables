@@ -6,7 +6,9 @@ wrong so the driver can follow along by ear, and a log of every session.
 
 - **Setup:** multiplication, division or both; the tables and times ranges (7 × 1–12,
   2–10 × 2–10…), a top score, a session length, an idle stop, a time limit per answer,
-  a wait and a points penalty after a wrong answer. The last settings are remembered.
+  a wait and a points penalty after a wrong answer, and "Practice the ones I miss", which
+  puts the facts missed lately into each pass of the deck up to four times (the log's
+  recent sessions count most). The last settings are remembered.
 - **Session:** questions come from a shuffled deck, so every question in the range is
   asked once before any repeats. Division turns each fact round (21 ÷ 7 or 21 ÷ 3), so
   every answer is whole; with both, each fact comes both ways, never one right after

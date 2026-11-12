@@ -44,6 +44,13 @@ fun factText(f: FactStats): String = when (f.op) {
     }
 }
 
+/** Under the practice switch: how many questions in the range the log will push. */
+fun practiceText(boosted: Int): String = when (boosted) {
+    0 -> "Nothing in this range missed yet, so every question comes up equally"
+    1 -> "1 question in this range missed lately comes up more often"
+    else -> "$boosted questions in this range missed lately come up more often"
+}
+
 /** The limits that were on, in a few words: "to 20 · 5 s each · wait 2 s · −1 wrong". */
 fun limitsText(s: DrillSettings): String = listOfNotNull(
     s.maxScore?.let { "to $it" },

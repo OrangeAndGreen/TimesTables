@@ -61,9 +61,19 @@ object QuestionDeck {
      * A freshly shuffled deck. Each question is turned round at random (4 × 3 or 3 × 4,
      * 12 ÷ 3 or 12 ÷ 4), and no question follows one from the same fact, [after] (the
      * question just asked) included, wherever the deck leaves a way to avoid it.
+     *
+     * With [weights], a fact missed often goes in more than once, so it comes up more in
+     * each pass; every question still comes at least once, and its copies are kept apart
+     * like any two questions from one fact.
      */
-    fun shuffled(settings: DrillSettings, random: Random, after: Question? = null): List<Question> {
-        val pool = all(settings).shuffled(random).map { flip(it, random) }.toMutableList()
+    fun shuffled(
+        settings: DrillSettings,
+        random: Random,
+        after: Question? = null,
+        weights: FactWeights = FactWeights.NONE,
+    ): List<Question> {
+        val pool = all(settings).flatMap { q -> List(weights.copies(q, random)) { q } }
+            .shuffled(random).map { flip(it, random) }.toMutableList()
         val deck = mutableListOf<Question>()
         fun clash(q: Question, previous: Question?) = previous != null && q.sameFactAs(previous)
         while (pool.isNotEmpty()) {

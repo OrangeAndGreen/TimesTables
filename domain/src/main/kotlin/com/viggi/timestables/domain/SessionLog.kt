@@ -6,6 +6,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.int
@@ -136,6 +137,7 @@ object SessionCodec {
         put("wrongPenalty", s.wrongPenalty)
         put("sessionMinutes", s.sessionMinutes.orNull())
         put("idleStopMinutes", s.idleStopMinutes.orNull())
+        put("practiceMissed", s.practiceMissed)
     }
 
     /** Settings from [o]; anything missing keeps its default, so older entries still read. */
@@ -157,6 +159,7 @@ object SessionCodec {
             wrongPenalty = int("wrongPenalty", d.wrongPenalty),
             sessionMinutes = optional("sessionMinutes", d.sessionMinutes),
             idleStopMinutes = optional("idleStopMinutes", d.idleStopMinutes),
+            practiceMissed = o["practiceMissed"]?.jsonPrimitive?.booleanOrNull ?: d.practiceMissed,
         )
     }
 

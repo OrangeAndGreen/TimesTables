@@ -29,6 +29,8 @@ data class DrillSettings(
     val sessionMinutes: Int? = null,
     /** With no answer typed for this long the session ends, at the last answer. */
     val idleStopMinutes: Int? = 3,
+    /** Facts missed most in the log come up more often; off asks every fact equally. */
+    val practiceMissed: Boolean = false,
 ) {
     /** The same settings with each range the right way round and nothing negative. */
     fun normalized(): DrillSettings = copy(
